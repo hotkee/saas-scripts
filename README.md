@@ -24,5 +24,5 @@ This command will read the given config file (or `/etc/jamotion/backup.conf` as 
 
 ### Todo
 
-- Allowing to define the target path directly in config file (with regions like `[options]` and `[customers]`.
+- Making the target path configurable in config file (maybe with regions like `[options]` and `[customers]`.
 
