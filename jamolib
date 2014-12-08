@@ -1,0 +1,24 @@
+#!/bin/bash
+readonly RED="\e[31m"
+readonly YELLOW="\e[33m"
+readonly GREEN="\e[32m"
+readonly STD="\e[0m"
+
+readonly DOCKERHUB="jamotion"
+
+function msginfo {
+    echo -e "${STD}$1"
+}
+function msgrun {
+    echo -e "${YELLOW}$1...${STD}"
+}
+function msgdone {
+    echo -e "${GREEN}$1${STD}"
+}
+function msgerror {
+    echo -e "${RED}$1${STD}"
+}
+
+function stopcontainer {
+    docker stop -t 30 $1
+}
