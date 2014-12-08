@@ -2,5 +2,5 @@
 if [ ! -d /etc/jamotion ]; then
     mkdir -p /etc/jamotion
 fi
-rsync -av --exclude='*.md' ./scripts /usr/local/bin/
-rsync -av --exclude='*.md' ./config /etc/jamotion/
+rsync -av --exclude='*.md' ./scripts/ /usr/local/bin/
+rsync -av --exclude='*.md' ./config/ /etc/jamotion/
