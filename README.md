@@ -1,6 +1,21 @@
 Jamotion SaaS Scripts
 =====================
 
+Intro
+-----
+
+This repository contains helping bash scripts for managing a SaaS Server providing Odoo Solutions
+
+Installation
+------------
+
+* Clone the repository
+* run `install` script
+
+The install script will copy all bash scripts and sample config files into corresponding folders.
+All bash scripts are copied to the `/usr/local/bin`folder. The config files are all located in `/etc/jamotion`.
+
+
 docker-backup
 -------------
 

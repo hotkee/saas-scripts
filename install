@@ -1,2 +1,6 @@
 #!/bin/bash
-rsync -av --exclude='install' --exclude='.git' --exclude='*.md' . /usr/local/bin/
+if [ ! -d /etc/jamotion ]; then
+    mkdir -p /etc/jamotion
+fi
+rsync -av --exclude='*.md' ./scripts /usr/local/bin/
+rsync -av --exclude='*.md' ./config /etc/jamotion/
