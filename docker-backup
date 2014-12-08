@@ -1,0 +1,71 @@
+#!/bin/bash
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source ${DIR}/jamolib
+
+if [ $# -lt 1 ]
+  then
+    msgerror "Error! Too few arguments supplied!"
+    msginfo "Command: docker-backup <customer> <database>"
+    msginfo "or"
+    msginfo "Command: docker-backup -c [configfile]"
+    exit 1
+fi
+
+if [ "$1" == "-c" ]
+  then
+    if [ $# -eq 1 ]
+      then 
+        CFILE=/etc/jamotion/backup.conf
+      else
+        CFILE=$2
+    fi
+    declare -A CONF
+    IFS="="
+    msgrun "Reading Configuration file $CFILE"
+    while read -r name value
+    do
+        CUSTOMER=$(echo "$name" | sed 's/^ *//g' | sed 's/ *$//g')
+        DB=$(echo "$value" | sed 's/^ *//g' | sed 's/ *$//g')
+        CONF[$CUSTOMER]=$DB
+    done < $CFILE
+    msgdone "Configuration readed"
+    HASERR=0
+    msgrun "running backup for every customer"
+    for i in "${!CONF[@]}"
+      do
+        CUSTOMER=$i
+        DB=${CONF[$i]}
+        msgrun "running backup for $CUSTOMER with database $DB"
+        docker run -ti --volumes-from $CUSTOMER.data -v /jamoshared/backup:/backup --rm --env DBNAME=$DB jamotion/odoo-backup
+        if [[ $? != 0 ]]
+          then
+            msgerror "Backup of $CUSTOMER with database $DB failed!"
+            HASERR=1
+          else
+            msgdone "Backup for $CUSTOMER made"
+            msgrun "Removing old backup files"
+            find /jamoshared/backup -mtime +5 -type f -delete
+            msgdone "Old backup files removed"
+        fi
+    done
+    if [ $HASERR -eq 0 ]
+      then 
+        msgdone "All Backups sucessfully made"
+      else
+        msgerror "Some errors occured while creating backup!"
+    fi
+    exit $HASERR
+  else
+    CUSTOMER=$1
+    DB=$2
+    msgrun "creating backup for $CUSTOMER with database $DB"
+    docker run -ti --volumes-from $CUSTOMER.data -v /jamoshared/backup:/backup --rm --env DBNAME=$DB jamotion/odoo-backup
+    if [[ $? != 0 ]]
+      then
+        msgerror "Backup failed!"
+        exit 1
+      else
+        msgdone "Backup sucessfully made"
+    fi
+fi
