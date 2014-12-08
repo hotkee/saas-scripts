@@ -1,0 +1,5 @@
+[options]
+targetpath=/jamoshared/backup
+
+[customers]
+customername=database
