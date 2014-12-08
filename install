@@ -1,2 +1,2 @@
 #!/bin/bash
-cp * /usr/local/bin
+rsync -av --exclude='install' --exclude='.git' --exclude='*.md' . /usr/local/bin/
